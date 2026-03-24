@@ -1,0 +1,20 @@
+# .vs IDE folder
+.vs/
+.vscode/
+
+# Build artifacts
+**/bin/
+**/obj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Secrets
+appsettings.Development.json
+
+# Tooling
+.tools/
