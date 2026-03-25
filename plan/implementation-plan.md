@@ -30,6 +30,17 @@ This document describes the full feature-complete implementation plan for the Ch
   - Student
 - [ ] User profile basic information
 
+### Frontend
+- [ ] Login / Register pages
+- [ ] Auth session handling (JWT storage)
+- [ ] Role-based route guard (Admin/Teacher/Student)
+- [ ] Basic layout shell (App layout + navigation)
+
+### Backoffice
+- [ ] Admin user list page
+- [ ] View user detail
+- [ ] Role assignment UI
+
 ---
 
 ## 1.2 Learning Module
@@ -40,6 +51,16 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] Track completion progress per goal
 - [ ] Business rule:
   - Max 5 active learning plans per user
+
+### Frontend
+- [ ] Learning plan list view
+- [ ] Create/Edit learning plan form
+- [ ] Daily goal tracking UI
+- [ ] Progress indicator per plan
+
+### Backoffice
+- [ ] Admin override learning plan status
+- [ ] View user learning progress
 
 ---
 
@@ -55,6 +76,17 @@ This document describes the full feature-complete implementation plan for the Ch
   - Active assignments are locked
 - [x] Track task completion per student
 
+### Frontend
+- [ ] Assignment list (student view)
+- [ ] Assignment detail page
+- [ ] Task completion UI (checkbox / interaction)
+- [ ] Assignment status badge system
+
+### Backoffice
+- [ ] Teacher assignment builder UI
+- [ ] Assign assignment to students/classes
+- [ ] Assignment monitoring dashboard
+
 ---
 
 ## Content Module (Chess Knowledge Base)
@@ -68,6 +100,17 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] Content linking to Assignment Tasks
 - [ ] Local caching for external content
 
+### Frontend
+- [ ] Content browsing page
+- [ ] Puzzle solving interface
+- [ ] Game review viewer
+- [ ] Content detail page
+
+### Backoffice
+- [ ] Content editor (CRUD CMS)
+- [ ] Tag management UI
+- [ ] Difficulty configuration panel
+
 ---
 
 ## Admin Module
@@ -75,6 +118,14 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] User management
 - [ ] Role management
 - [ ] Basic system configuration APIs
+
+### Frontend
+- [ ] Admin dashboard home
+
+### Backoffice
+- [ ] Full admin panel shell
+- [ ] System settings page
+- [ ] User management center
 
 ---
 
@@ -91,6 +142,16 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] Game deduplication system
 - [ ] Store game metadata + PGN
 
+### Frontend
+- [ ] Game library page
+- [ ] Game viewer (PGN replay board)
+- [ ] Import game UI (upload / connect account)
+
+### Backoffice
+- [ ] Game import monitoring dashboard
+- [ ] Failed import retry UI
+- [ ] User game history management
+
 ---
 
 ## Background Jobs
@@ -99,6 +160,10 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] GameProcessingJob (normalize + persist)
 - [ ] Retry mechanism for failed jobs
 - [ ] Job monitoring via Hangfire dashboard
+
+### Backoffice
+- [ ] Job monitoring panel (Hangfire UI access)
+- [ ] Job status dashboard
 
 ---
 
@@ -116,6 +181,15 @@ This document describes the full feature-complete implementation plan for the Ch
   - Student dashboard progress
   - Teacher overview per student/class
 
+### Frontend
+- [ ] Student progress dashboard
+- [ ] Streak visualization
+- [ ] Progress charts (completion/accuracy)
+
+### Backoffice
+- [ ] Teacher analytics dashboard
+- [ ] Class performance overview
+
 ---
 
 # Phase 3: Intelligence, Notifications & UX (Week 5+)
@@ -130,6 +204,11 @@ This document describes the full feature-complete implementation plan for the Ch
   - Best / Good / Inaccuracy / Mistake / Blunder
 - [ ] Persist analysis results per move
 
+### Frontend
+- [ ] Game analysis viewer (move annotations)
+- [ ] Visual evaluation bar
+- [ ] Blunder highlight UI
+
 ---
 
 ## Notification Module
@@ -139,6 +218,15 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] Game analysis completed notifications
 - [ ] Event-triggered notifications
 
+### Frontend
+- [ ] Notification center UI
+- [ ] Toast notifications
+- [ ] Notification badge indicator
+
+### Backoffice
+- [ ] Notification management panel
+- [ ] Broadcast notification tool
+
 ---
 
 ## File / Media Module
@@ -146,6 +234,14 @@ This document describes the full feature-complete implementation plan for the Ch
 - [ ] PGN file storage
 - [ ] Export analysis reports
 - [ ] Optional board snapshot storage
+
+### Frontend
+- [ ] Download/export UI (PGN, report)
+- [ ] File viewer integration
+
+### Backoffice
+- [ ] File storage management
+- [ ] Export logs
 
 ---
 
@@ -157,6 +253,13 @@ This document describes the full feature-complete implementation plan for the Ch
   - Puzzle solving
 - [ ] Admin audit view
 - [ ] Activity history per user
+
+### Frontend
+- [ ] User activity timeline (basic)
+
+### Backoffice
+- [ ] Audit log dashboard
+- [ ] System activity filtering/search
 
 ---
 
@@ -173,6 +276,17 @@ This document describes the full feature-complete implementation plan for the Ch
   - Puzzle solving mode
   - Game review mode
 
+### Frontend
+- [ ] Global layout system
+- [ ] Responsive dashboard (Student/Teacher)
+- [ ] Chessboard component system
+- [ ] Route-based role UI separation
+
+### Backoffice
+- [ ] Admin UI shell (separate layout)
+- [ ] System monitoring dashboard
+- [ ] Feature toggle control (optional)
+
 ---
 
 # Technical Stack
@@ -185,6 +299,8 @@ This document describes the full feature-complete implementation plan for the Ch
   - Lichess API
   - Chess.com API
 - Chess Engine: Stockfish
+- Frontend: (React / Next.js assumed)
+- Backoffice: Admin dashboard (React-based or separate UI layer)
 
 ---
 
@@ -201,4 +317,5 @@ This plan defines a **feature-complete Chess Learning Platform** with:
 - Notifications
 - Audit logging
 - Admin management
-- Full UI support structure
+- Full Frontend application
+- Full Backoffice administration system
