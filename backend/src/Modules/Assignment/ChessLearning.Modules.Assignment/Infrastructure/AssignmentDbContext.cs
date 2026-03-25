@@ -1,6 +1,5 @@
 using ChessLearning.Modules.Assignment.Domain;
 using Microsoft.EntityFrameworkCore;
-using Task = ChessLearning.Modules.Assignment.Domain.Task;
 
 namespace ChessLearning.Modules.Assignment.Infrastructure;
 
@@ -12,7 +11,7 @@ public class AssignmentDbContext : DbContext
 
     public DbSet<Domain.Assignment> Assignments => Set<Domain.Assignment>();
     public DbSet<AssignmentTask> AssignmentTasks => Set<AssignmentTask>();
-    public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<LearningTask> Tasks => Set<LearningTask>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,54 +1,204 @@
-# Chess Learning Platform — Implementation Plan
+# Chess Learning Platform — Feature-Complete Implementation Plan
 
-This document outlines the step-by-step implementation plan for the **Chess Learning Platform**.
-
-## Phase 1: Foundation & Core Modules (Week 1-2)
-
-### 1.1 Infrastructure Setup
-- [ ] Initialize .NET Solution and projects according to the modular monolith architecture.
-- [ ] Set up **Entity Framework Core** for each module (Individual DbContexts).
-- [ ] Configure **Shared Kernel** (BaseEntity, ICurrentUserService, etc.).
-- [ ] Implement **Identity Module**: Register, Login, JWT verification with Role-based access (Admin, Teacher, Student).
-- [ ] Set up **Hangfire** for background job management.
-
-### 1.2 Learning & Assignment Modules
-- [ ] Implement **Learning Module**: CRUD for Learning Plans and Daily Goals.
-- [ ] Implement **Assignment Module**: CRUD for Assignments and AssignmentTasks.
-- [ ] Implement Task entity link to ContentId.
-- [ ] Unit tests for Learning Plan limits (max 5 active) and Assignment state transitions.
-
-### 1.3 Content Module (Puzzles & CMS)
-- [ ] Implement **Content Module**: Support for Puzzle, GameReview, and Custom content types.
-- [ ] Implement **Lichess API** sync integration (fetching puzzles).
-- [ ] Support local caching of external puzzles.
-
-## Phase 2: Game Import & Progress Tracking (Week 3-4)
-
-### 2.1 Game Library
-- [ ] Implement **Game Module**: Integration with Chess.com and Lichess APIs for manual game imports.
-- [ ] Create background jobs (`GameImportJob`) to handle large imports asynchronously.
-- [ ] Ensure deduplication to prevent importing the same game twice.
-
-### 2.2 Progress & Analytics
-- [ ] Implement **Progress Module**: Event-based tracking (PuzzleSolved, TaskCompleted, etc.).
-- [ ] Implement `ProgressSummary` calculation (Read model logic).
-- [ ] Build Aggregate/Summary API for student dashboards.
-
-## Phase 3: Advanced Features & Polish (Week 5+)
-
-### 3.1 Chess Engine Integration
-- [ ] Implement `StockfishProcessService` for local game analysis.
-- [ ] Add `GameAnalysisJob` to generate blunder checks and move evaluations.
-- [ ] Update frontend/API to display move quality annotations.
-
-### 3.2 UI/UX Development
-- [ ] Finalize standard dashboard views for Students and Teachers.
-- [ ] Implement interactive Board components for puzzles and game reviews.
+This document describes the full feature-complete implementation plan for the Chess Learning Platform built as a modular monolith using .NET.
 
 ---
 
-## Technical Stack
-- **Backend**: .NET 8/9, EF Core, SQL Server.
-- **Background Jobs**: Hangfire.
-- **APIs**: Lichess API, Chess.com API.
-- **Engine**: Stockfish.
+# Phase 1: Foundation & Core Modules (Week 1–2)
+
+## 1.1 Infrastructure Setup
+
+- [ ] Initialize .NET modular monolith solution
+- [x] Configure EF Core per module (separate DbContext per bounded context)
+- [ ] Shared Kernel:
+  - BaseEntity
+  - Auditing fields (CreatedAt, UpdatedAt)
+  - ICurrentUserService
+- [ ] Global exception handling middleware
+- [ ] Logging infrastructure (Serilog or equivalent)
+- [x] Hangfire setup for background jobs
+
+---
+
+## Identity Module
+
+- [ ] User registration & login
+- [ ] JWT authentication
+- [ ] Role-based authorization:
+  - Admin
+  - Teacher
+  - Student
+- [ ] User profile basic information
+
+---
+
+## 1.2 Learning Module
+
+- [ ] Learning Plan CRUD
+- [ ] Daily Goal CRUD
+- [ ] Assign goals to learning plans
+- [ ] Track completion progress per goal
+- [ ] Business rule:
+  - Max 5 active learning plans per user
+
+---
+
+## Assignment Module
+
+- [x] Assignment CRUD
+- [x] Assignment Task CRUD
+- [x] Link Task → ContentId
+- [x] Assignment state machine:
+  - Draft → Active → Completed → Archived
+- [x] Rules:
+  - Only Draft assignments can be modified
+  - Active assignments are locked
+- [x] Track task completion per student
+
+---
+
+## Content Module (Chess Knowledge Base)
+
+- [ ] Content CRUD:
+  - Puzzle
+  - Game Review
+  - Lesson / Article
+- [ ] Tag system (tactics, fork, pin, endgame, etc.)
+- [ ] Difficulty rating system
+- [ ] Content linking to Assignment Tasks
+- [ ] Local caching for external content
+
+---
+
+## Admin Module
+
+- [ ] User management
+- [ ] Role management
+- [ ] Basic system configuration APIs
+
+---
+
+# Phase 2: Game Import & Progress System (Week 3–4)
+
+---
+
+## Game Module
+
+- [ ] Import games from:
+  - Lichess API
+  - Chess.com API
+- [ ] Manual PGN upload support
+- [ ] Game deduplication system
+- [ ] Store game metadata + PGN
+
+---
+
+## Background Jobs
+
+- [ ] GameImportJob (async ingestion)
+- [ ] GameProcessingJob (normalize + persist)
+- [ ] Retry mechanism for failed jobs
+- [ ] Job monitoring via Hangfire dashboard
+
+---
+
+## Progress Module
+
+- [ ] Event tracking system:
+  - PuzzleSolved
+  - AssignmentCompleted
+  - GameImported
+- [ ] Progress summary model:
+  - Completion rate
+  - Accuracy rate
+  - Activity streak
+- [ ] APIs:
+  - Student dashboard progress
+  - Teacher overview per student/class
+
+---
+
+# Phase 3: Intelligence, Notifications & UX (Week 5+)
+
+---
+
+## Chess Engine Integration
+
+- [ ] Stockfish integration service
+- [ ] Game analysis pipeline
+- [ ] Move classification:
+  - Best / Good / Inaccuracy / Mistake / Blunder
+- [ ] Persist analysis results per move
+
+---
+
+## Notification Module
+
+- [ ] In-app notifications system
+- [ ] Assignment reminders
+- [ ] Game analysis completed notifications
+- [ ] Event-triggered notifications
+
+---
+
+## File / Media Module
+
+- [ ] PGN file storage
+- [ ] Export analysis reports
+- [ ] Optional board snapshot storage
+
+---
+
+## Audit & Activity Log Module
+
+- [ ] Track user actions:
+  - Login
+  - Assignment updates
+  - Puzzle solving
+- [ ] Admin audit view
+- [ ] Activity history per user
+
+---
+
+## UI / UX Layer
+
+- [ ] Student dashboard:
+  - Learning progress
+  - Assignments
+  - Puzzle solving interface
+- [ ] Teacher dashboard:
+  - Student overview
+  - Assignment management
+- [ ] Interactive chessboard:
+  - Puzzle solving mode
+  - Game review mode
+
+---
+
+# Technical Stack
+
+- Backend: .NET 8 / 9
+- ORM: Entity Framework Core
+- Database: SQL Server
+- Background Jobs: Hangfire
+- External APIs:
+  - Lichess API
+  - Chess.com API
+- Chess Engine: Stockfish
+
+---
+
+# Summary
+
+This plan defines a **feature-complete Chess Learning Platform** with:
+
+- Learning system
+- Assignment system
+- Content system
+- Game import system
+- Progress tracking
+- Chess engine analysis
+- Notifications
+- Audit logging
+- Admin management
+- Full UI support structure

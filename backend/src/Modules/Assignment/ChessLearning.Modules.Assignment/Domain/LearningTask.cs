@@ -9,7 +9,7 @@ public enum ContentType
     Custom
 }
 
-public class Task : AggregateRoot
+public class LearningTask : AggregateRoot
 {
     public Guid ContentId { get; set; } // Reference to Content module
 
@@ -17,6 +17,6 @@ public class Task : AggregateRoot
     public string Title { get; set; } = default!;
     public string Instructions { get; set; } = default!;
     
-    public Guid CreatedById { get; set; }
+    public string CreatedById { get; set; } = default!;
     public bool IsPublic { get; set; }
 }

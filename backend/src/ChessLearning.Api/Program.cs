@@ -50,6 +50,7 @@ app.UseHangfireDashboard("/admin/hangfire");
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAssignmentModule();
 
 app.MapControllers();
 

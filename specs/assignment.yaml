@@ -1,0 +1,319 @@
+module: Assignment
+
+# =====================================================
+# DOMAIN MODEL (STRICT NOTION ALIGNMENT)
+# =====================================================
+domain:
+
+  entity: Assignment
+  fields:
+    - name: Id
+      type: string
+    - name: Title
+      type: string
+      required: true
+    - name: DueDate
+      type: datetime
+      required: true
+    - name: Status
+      type: enum
+      values: [Draft, Active, Completed, Overdue]
+    - name: CompletedAt
+      type: datetime
+      nullable: true
+    - name: CreatedById
+      type: string
+
+  entity: AssignmentTask
+  fields:
+    - name: Id
+      type: string
+    - name: AssignmentId
+      type: string
+      required: true
+    - name: TaskId
+      type: string
+      required: true
+    - name: Order
+      type: int
+    - name: Status
+      type: enum
+      values: [Pending, Completed]
+    - name: CompletedAt
+      type: datetime
+      nullable: true
+
+  entity: Task
+    fields:
+      - name: Id
+        type: string
+      - name: ContentId
+        type: string
+      - name: ContentType
+        type: string
+      - name: Title
+        type: string
+      - name: Instructions
+        type: string
+      - name: IsPublic
+        type: boolean
+      - name: CreatedById
+        type: string
+
+
+# =====================================================
+# FRONTEND SERVICES (8)
+# =====================================================
+frontend_services:
+
+  - name: CreateAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - set Status = Draft
+
+  - name: AddTaskToAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - allowed only if Status == Draft
+
+  - name: ActivateAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - Status == Draft
+      - AssignmentTask.count > 0
+
+  - name: CompleteTask
+    type: command
+    aggregate: Assignment
+    rules:
+      - Assignment.Status in [Active, Overdue]
+      - mark AssignmentTask.CompletedAt = now
+      - if all tasks completed → trigger CompleteAssignment
+
+  - name: CompleteAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - all AssignmentTask.Status == Completed
+      - set CompletedAt = now
+
+  - name: MarkAssignmentOverdue
+    type: system_command
+    trigger: background_job
+    rules:
+      - Status == Active AND now > DueDate
+
+  - name: GetAssignmentDetail
+    type: query
+    returns:
+      - Assignment + AssignmentTasks + Task metadata
+
+  - name: ListAssignments
+    type: query
+    returns:
+      - Assignment list (optional Status filter)
+
+
+# =====================================================
+# BACKOFFICE SERVICES (10)
+# =====================================================
+backoffice_services:
+
+  - name: CreateAssignment
+    type: command
+    aggregate: Assignment
+
+  - name: AddTaskToAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - Status == Draft
+      - Task.IsPublic == true
+      - create AssignmentTask (Pending)
+
+  - name: ActivateAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - AssignmentTask.count > 0
+
+  - name: CompleteTask
+    type: command
+    aggregate: AssignmentTask
+    rules:
+      - set Status = Completed
+      - set CompletedAt = now
+
+  - name: FinalizeAssignment
+    type: command
+    aggregate: Assignment
+    rules:
+      - no AssignmentTask in Pending
+      - set Status = Completed
+      - set CompletedAt = now
+
+  - name: HandleOverdueWork
+    type: system_command
+    trigger: background_job
+    rules:
+      - Active + now > DueDate → Overdue
+      - Overdue + completed later → Completed Late
+
+  - name: AssignmentDashboard
+    type: query
+    returns:
+      - grouped assignments by status
+
+  - name: DetailedProgressReview
+    type: query
+    returns:
+      - Assignment + Tasks sorted by Order
+
+  - name: TaskListInspection
+    type: query
+    returns:
+      - AssignmentTask + Status + timestamps
+
+  - name: ContentCorrelationView
+    type: query
+    returns:
+      - Task → ContentId + ContentType mapping
+
+
+# =====================================================
+# STATE MACHINE
+# =====================================================
+state_machine:
+
+  states:
+    - Draft
+    - Active
+    - Completed
+    - Overdue
+
+  transitions:
+
+    - from: Draft
+      to: Active
+      guard:
+        - AssignmentTask.count > 0
+
+    - from: Active
+      to: Completed
+      guard:
+        - all AssignmentTask.Status == Completed
+
+    - from: Active
+      to: Overdue
+
+    - from: Overdue
+      to: Completed
+      guard:
+        - all AssignmentTask.Status == Completed
+
+
+# =====================================================
+# BUSINESS INVARIANTS
+# =====================================================
+invariants:
+
+  - id: INV_1
+    description: Assignment cannot be Completed if any task is Pending
+
+  - id: INV_2
+    description: Completing last task triggers auto CompleteAssignment
+
+  - id: INV_3
+    description: Active assignments past DueDate become Overdue
+
+  - id: INV_4
+    description: All state transitions must be persisted
+
+  - id: INV_5
+    description: AssignmentTask must belong to Assignment
+
+
+# =====================================================
+# BACKGROUND JOBS
+# =====================================================
+background_jobs:
+
+  - name: OverdueMonitor
+    type: scheduler
+    logic:
+      - find Assignment where Status == Active AND now > DueDate
+      - trigger MarkAssignmentOverdue
+
+
+# =====================================================
+# API LAYER (FRONTEND / BACKOFFICE SEPARATED)
+# =====================================================
+api:
+
+  frontend:
+
+    AssignmentController:
+
+      CreateAssignment:
+        method: POST
+        path: /api/frontend/assignments
+
+      GetAssignmentDetail:
+        method: GET
+        path: /api/frontend/assignments/{id}
+
+      ListAssignments:
+        method: GET
+        path: /api/frontend/assignments
+
+      CompleteTask:
+        method: POST
+        path: /api/frontend/assignments/{id}/tasks/{taskId}/complete
+
+
+  backoffice:
+
+    AssignmentController:
+
+      CreateAssignment:
+        method: POST
+        path: /api/backoffice/assignments
+
+      AddTaskToAssignment:
+        method: POST
+        path: /api/backoffice/assignments/{id}/tasks
+
+      ActivateAssignment:
+        method: POST
+        path: /api/backoffice/assignments/{id}/activate
+
+      CompleteTask:
+        method: POST
+        path: /api/backoffice/assignments/{id}/tasks/{taskId}/complete
+
+      FinalizeAssignment:
+        method: POST
+        path: /api/backoffice/assignments/{id}/finalize
+
+      HandleOverdueWork:
+        method: POST
+        path: /api/backoffice/assignments/{id}/mark-overdue
+
+      AssignmentDashboard:
+        method: GET
+        path: /api/backoffice/assignments/dashboard
+
+      DetailedProgressReview:
+        method: GET
+        path: /api/backoffice/assignments/{id}/progress
+
+      TaskListInspection:
+        method: GET
+        path: /api/backoffice/assignments/{id}/tasks
+
+      ContentCorrelationView:
+        method: GET
+        path: /api/backoffice/assignments/{id}/content-map
