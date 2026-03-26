@@ -1,0 +1,78 @@
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 glass-nav shadow-[0_20px_40px_rgba(27,28,24,0.06)]">
+  <div class="flex justify-between items-center px-12 h-20 w-full max-w-screen-2xl mx-auto">
+    <div class="text-2xl font-serif text-[var(--primary)] tracking-tight">Grandmaster Ivory</div>
+    <nav class="hidden md:flex space-x-8 h-full items-center">
+      <a class="nav-item-link" href="#">Play</a>
+      <a class="nav-item-link" href="#">Tournaments</a>
+      <a class="nav-item-link" href="#">Lessons</a>
+      <a class="nav-item-link" href="#">Analysis</a>
+    </nav>
+    <div class="flex items-center space-x-6">
+      <button class="material-symbols-outlined text-[var(--on-surface-variant)] hover:text-[var(--primary)] transition-all">notifications</button>
+      <div class="h-10 w-10 overflow-hidden rounded-full bg-[var(--surface-container)] cursor-pointer" (click)="toggleDropdown()">
+        <img class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiByrckMtFPVPCOhuSEs2kv1vjEdy5VBH5ENu4pP9KxVcySoSPu9soS9rI09WnXX8edUzeugVCtr0xLGco1lyClg9QMW7Nd4vn65FEsxGKlat0ijNixN8BAmAQQ_sxQgl4TQDAy0W1XQ1L0vzUetByzNoWHvNm-qawQf0uPxp9MoU61v0JownMzlDf6GSm1nVwQ53aTb2_0PI2Sh2ZL325davas1dXbk-qd3x8jNcsEdeil_Ibz8UQUPBZwQWzVDRi0Wdna8Zr">
+      </div>
+      
+      <!-- Profile Dropdown -->
+      <div *ngIf="isDropdownOpen" class="absolute top-20 right-12 bg-white shadow-xl border border-[var(--outline-variant)]/20 rounded-lg p-6 w-64 z-[60]">
+        <div class="mb-4 pb-4 border-b border-[var(--outline-variant)]/10">
+          <p class="font-bold text-[var(--primary)]">{{ currentUser()?.name }}</p>
+          <p class="text-xs text-[var(--on-surface-variant)]">{{ currentUser()?.email }}</p>
+        </div>
+        <button class="w-full text-left text-sm py-2 hover:text-[var(--primary)] text-[var(--on-surface-variant)]" (click)="logout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="flex min-h-screen pt-20">
+  <!-- Side Navigation Bar -->
+  <aside class="h-full w-64 fixed left-0 top-20 bg-[var(--surface)] flex flex-col py-8 space-y-2 border-r border-[var(--outline-variant)]/15 z-40">
+    <div class="px-8 mb-8">
+      <div class="font-serif italic text-lg text-[var(--primary)]">Archivist Portal</div>
+      <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--on-surface-variant)] opacity-60">
+        {{ currentUser()?.role || 'Guest' }} Rank
+      </div>
+    </div>
+
+    <nav class="flex-1 space-y-1">
+      <a routerLinkActive="active" [routerLink]="['/', rolePath(), 'dashboard']" class="sidebar-link">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="font-medium tracking-wide">Dashboard</span>
+      </a>
+      
+      <a routerLinkActive="active" [routerLink]="['/teacher/assignments/create']" *ngIf="currentUser()?.role === 'Teacher'" class="sidebar-link">
+        <span class="material-symbols-outlined">edit_note</span>
+        <span class="font-medium tracking-wide">Create Module</span>
+      </a>
+
+      <a class="sidebar-link" href="#">
+        <span class="material-symbols-outlined">assignment</span>
+        <span class="font-medium tracking-wide">Assignments</span>
+      </a>
+
+      <a class="sidebar-link" href="#">
+        <span class="material-symbols-outlined">extension</span>
+        <span class="font-medium tracking-wide">Puzzles</span>
+      </a>
+
+      <a class="sidebar-link" href="#">
+        <span class="material-symbols-outlined">insights</span>
+        <span class="font-medium tracking-wide">Progress</span>
+      </a>
+
+      <a class="sidebar-link mt-auto" href="#">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="font-medium tracking-wide">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Canvas -->
+  <main class="ml-64 flex-1 p-12 bg-[var(--surface)] min-h-[calc(100vh-80px)]">
+    <div class="max-w-6xl mx-auto">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

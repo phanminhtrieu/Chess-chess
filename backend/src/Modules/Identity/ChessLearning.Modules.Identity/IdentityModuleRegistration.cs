@@ -63,6 +63,7 @@ public static class IdentityModuleRegistration
         services.AddTransient<ChessLearning.Shared.Application.Contracts.Cqrs.ICommandHandler<Application.Users.Commands.RevokeUserSessionsCommand>, Application.Users.Commands.RevokeUserSessionsCommandHandler>();
         services.AddTransient<ChessLearning.Shared.Application.Contracts.Cqrs.ICommandHandler<Application.Users.Commands.DeactivateUserCommand>, Application.Users.Commands.DeactivateUserCommandHandler>();
         
+        services.AddTransient<ChessLearning.Shared.Application.Contracts.Cqrs.ICommandHandler<Application.Users.Commands.SetRoleCommand>, Application.Users.Commands.SetRoleCommandHandler>();
         services.AddTransient<ChessLearning.Shared.Application.Contracts.Cqrs.IQueryHandler<Application.Users.Queries.ListUsersQuery, IEnumerable<Application.Users.UserListItemDto>>, Application.Users.Queries.ListUsersQueryHandler>();
         services.AddTransient<ChessLearning.Shared.Application.Contracts.Cqrs.IQueryHandler<Application.Users.Queries.GetUserAuditQuery, Application.Users.UserAuditDto>, Application.Users.Queries.GetUserAuditQueryHandler>();
 

@@ -16,19 +16,22 @@ public class UsersController : ControllerBase
     private readonly ICommandHandler<RefreshSessionCommand, LoginResultDto> _refreshHandler;
     private readonly ICommandHandler<LogoutCommand> _logoutHandler;
     private readonly IQueryHandler<GetProfileQuery, UserProfileDto> _profileHandler;
+    private readonly ICommandHandler<SetRoleCommand> _setRoleHandler;
 
     public UsersController(
         ICommandHandler<RegisterUserCommand, Guid> registerHandler,
         ICommandHandler<LoginCommand, LoginResultDto> loginHandler,
         ICommandHandler<RefreshSessionCommand, LoginResultDto> refreshHandler,
         ICommandHandler<LogoutCommand> logoutHandler,
-        IQueryHandler<GetProfileQuery, UserProfileDto> profileHandler)
+        IQueryHandler<GetProfileQuery, UserProfileDto> profileHandler,
+        ICommandHandler<SetRoleCommand> setRoleHandler)
     {
         _registerHandler = registerHandler;
         _loginHandler = loginHandler;
         _refreshHandler = refreshHandler;
         _logoutHandler = logoutHandler;
         _profileHandler = profileHandler;
+        _setRoleHandler = setRoleHandler;
     }
 
     [HttpPost("register")]
@@ -59,6 +62,19 @@ public class UsersController : ControllerBase
         await _logoutHandler.ExecuteAsync(body);
         return Ok();
     }
+
+    [Authorize]
+    [HttpPost("set-role")]
+    public async Task<IActionResult> SetRole([FromBody] DynamicRoleRequest request)
+    {
+        var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
+
+        await _setRoleHandler.ExecuteAsync(new SetRoleCommand(userId, request.Role));
+        return Ok();
+    }
+
+    public record DynamicRoleRequest(string Role);
 
     [Authorize]
     [HttpGet("profile")]

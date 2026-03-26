@@ -50,37 +50,10 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
+// Seed Identity Data
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole<Guid>>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<ChessLearning.Modules.Identity.Domain.User>>();
-    
-    string[] roles = { "Student", "Teacher", "Admin" };
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new Microsoft.AspNetCore.Identity.IdentityRole<Guid>(role));
-        }
-    }
-
-    var adminEmail = "admin@gmail.com";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new ChessLearning.Modules.Identity.Domain.User
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            DisplayName = "Administrator",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            IsActive = true,
-            EmailConfirmed = true
-        };
-        await userManager.CreateAsync(adminUser, "123456");
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-    }
+    await ChessLearning.Modules.Identity.Infrastructure.IdentitySeedData.SeedAsync(app.Services);
 }
 
 if (app.Environment.IsDevelopment())

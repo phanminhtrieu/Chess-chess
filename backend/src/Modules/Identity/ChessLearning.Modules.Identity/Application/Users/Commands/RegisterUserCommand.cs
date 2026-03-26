@@ -34,13 +34,6 @@ public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, G
             throw new Exception($"Failed to register user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "Student");
-        if (!roleResult.Succeeded)
-        {
-            // If the role doesn't exist, we fallback to claim for simplicity
-            await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("Role", "Student"));
-        }
-
         return user.Id;
     }
 }

@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--on-surface);
+}
+
+.archivist-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+}
+
+.font-headline {
+  font-family: 'Newsreader', serif;
+}
+
+.font-body {
+  font-family: 'Manrope', sans-serif;
+}
+
+.font-label {
+  font-family: 'Manrope', sans-serif;
+}
+
+/* Specific button transitions */
+button {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Card hover tweaks */
+.group:hover {
+  border-color: var(--primary);
+}

@@ -1,0 +1,84 @@
+<header class="w-full top-0 left-0 bg-[#fafaf3] transition-all duration-300 ease-in-out">
+  <nav class="flex justify-between items-center px-8 py-6 w-full max-w-7xl mx-auto">
+    <div class="text-2xl font-serif tracking-tight text-[#000e24]">
+      Grandmaster Ivory
+    </div>
+    <div class="flex items-center gap-6">
+      <span class="material-symbols-outlined text-[#000e24] cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
+    </div>
+  </nav>
+</header>
+
+<main class="min-h-[calc(100vh-88px)] flex flex-col items-center justify-center px-6 py-20 relative overflow-hidden">
+  <!-- Subtle Background Decorative Elements -->
+  <div class="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none select-none">
+    <div class="absolute top-10 left-10 text-[20rem] font-headline italic">♙</div>
+    <div class="absolute bottom-10 right-10 text-[20rem] font-headline">♔</div>
+  </div>
+
+  <div class="max-w-5xl w-full relative z-10">
+    <!-- Header Section -->
+    <div class="text-center mb-16 space-y-4">
+      <h1 class="font-headline text-5xl md:text-6xl text-[var(--primary)] tracking-tight">Select your path</h1>
+      <p class="text-[var(--on-surface-variant)] max-w-xl mx-auto font-body text-lg leading-relaxed">
+        Choose how you wish to engage with the archives today. Whether honing your craft or guiding the next generation of masters.
+      </p>
+    </div>
+
+    <!-- Path Selection Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+      <!-- Student Card -->
+      <div (click)="selectRole('Student')" class="group cursor-pointer flex flex-col bg-[var(--surface-container-lowest)] transition-all duration-500 hover:translate-y-[-8px] shadow-sm hover:shadow-xl rounded-xl">
+        <div class="relative h-72 overflow-hidden rounded-t-xl">
+          <img alt="Chess pawn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuno5i3xaEu07_rbfJ-q0qn8ZOsJxM6U7RrrHEHIwQyMNuquVYl_oRsRbfZvLKQ6Wgm0jtmLSYaoIlk8oGy9IS4YMuwjs5fWe85di8_WDDdt8s1BY-bqzfj8ZUr8DczazKWry3_hPFbxQbcPRGCmbfJHI5G9i1nR2NtdHc9776e9h3iEiC9BvRzddMIzDzJKHShQf6FZZVLI4zOvImtL4sMfXeCjBshk4SnZJ-rmlHOKMor1MmRw6DzLoJ4FSpqwH6h3CudVx7">
+          <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500"></div>
+          <div class="absolute top-6 left-6 bg-white px-4 py-2 flex items-center gap-2 rounded-sm shadow-sm">
+            <span class="material-symbols-outlined text-[var(--primary)] scale-75">chess_pawn</span>
+            <span class="font-label text-xs font-semibold tracking-widest uppercase">The Initiate</span>
+          </div>
+        </div>
+        <div class="p-8 flex flex-col flex-grow">
+          <h2 class="font-headline text-3xl mb-4 group-hover:text-[var(--primary)] transition-colors">The Student's Journey</h2>
+          <p class="text-[var(--on-surface-variant)] font-body mb-8 leading-relaxed flex-grow">
+            Master the ancient game through curated curricula, tactical drills, and personalized analysis of your historical matches.
+          </p>
+          <button class="w-full py-4 px-6 archivist-gradient text-white font-label font-bold tracking-wide rounded-lg flex items-center justify-center gap-2 transition-all">
+            ENTER CURRICULUM
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Instructor Card -->
+      <div (click)="selectRole('Teacher')" class="group cursor-pointer flex flex-col bg-[var(--surface-container-lowest)] transition-all duration-500 hover:translate-y-[-8px] shadow-sm hover:shadow-xl rounded-xl">
+        <div class="relative h-72 overflow-hidden rounded-t-xl">
+          <img alt="Chess king" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB443V2a8OFDIKyBHYNTDDlsM515dWI2aAOPNXAODrfZJRukhUOOW-YCKZOWenUeN8tooLABH8MuCmdCIba4g1iCwEYZsn2RqEDYAKspGD2kTnxD0sS1OdXUPNnNqsKTuzTJQCKbg3Tkp10xe1CYcrkp5_Y9hWDD0Pj0tvtsPpQwQEUYn0ho3Y92sp3XxKXyj_hpnhasM0490CF2_TOueiIJ1N94O1wgIAt1icBq9uZqSApW6LZZsY2luMlyuGlBCdGEAvI3D-2">
+          <div class="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-colors duration-500"></div>
+          <div class="absolute top-6 left-6 bg-white px-4 py-2 flex items-center gap-2 rounded-sm shadow-sm">
+            <span class="material-symbols-outlined text-[var(--primary)] scale-75">king_bed</span>
+            <span class="font-label text-xs font-semibold tracking-widest uppercase">The Mentor</span>
+          </div>
+        </div>
+        <div class="p-8 flex flex-col flex-grow">
+          <h2 class="font-headline text-3xl mb-4 group-hover:text-[var(--primary)] transition-colors">The Instructor's Portal</h2>
+          <p class="text-[var(--on-surface-variant)] font-body mb-8 leading-relaxed flex-grow">
+            Architect lessons, manage your students' progress, and share your wisdom through the digital archives and library.
+          </p>
+          <button class="w-full py-4 px-6 border-2 border-[var(--primary)] text-[var(--primary)] font-label font-bold tracking-wide rounded-lg flex items-center justify-center gap-2 hover:bg-[var(--primary)] hover:text-white transition-all">
+            MANAGE ACADEMY
+            <span class="material-symbols-outlined text-sm">school</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="w-full py-4 px-8 flex justify-between items-center text-[10px] font-label text-[var(--on-surface-variant)] opacity-40 tracking-[0.2em] uppercase">
+  <div>© MMXXIV ARCHIVIST CORE</div>
+  <div class="flex gap-4">
+    <a class="hover:text-[var(--primary)] transition-colors cursor-pointer">Privacy</a>
+    <a class="hover:text-[var(--primary)] transition-colors cursor-pointer">Terms</a>
+    <a class="hover:text-[var(--primary)] transition-colors cursor-pointer">Network Status</a>
+  </div>
+</footer>

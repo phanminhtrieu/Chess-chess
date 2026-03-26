@@ -2,12 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Frontend</title>
+  <title>Grandmaster Ivory | Archivist Portal</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#43474e",
+            "outline-variant": "#c4c6d0",
+            "surface-variant": "#e3e3dc",
+            "error": "#ba1a1a",
+            "background": "#fafaf3",
+            "primary": "#000e24",
+            "surface": "#fafaf3",
+            "on-surface": "#1b1c18",
+            "surface-container": "#efeee7",
+            "surface-container-high": "#e9e8e2",
+            "surface-container-low": "#f5f4ed",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e3e3dc",
+            "primary-container": "#00234b",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+          },
+          fontFamily: {
+            "headline": ["Newsreader", "serif"],
+            "body": ["Manrope", "sans-serif"],
+            "label": ["Manrope", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="selection:bg-[#00234b]/20 selection:text-[#000e24]">
   <app-root></app-root>
 </body>
 </html>
