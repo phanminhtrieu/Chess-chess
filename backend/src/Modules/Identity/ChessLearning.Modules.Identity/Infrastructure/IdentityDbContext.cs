@@ -27,5 +27,11 @@ public class IdentityDbContext : IdentityDbContext<User, IdentityRole<Guid>, Gui
         builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
 
         builder.Entity<RefreshToken>().ToTable("RefreshTokens");
+        
+        builder.Entity<RefreshToken>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -8,7 +8,7 @@ This document describes the full feature-complete implementation plan for the Ch
 
 ## 1.1 Infrastructure Setup
 
-- [ ] Initialize .NET modular monolith solution
+- [x] Initialize .NET modular monolith solution
 - [x] Configure EF Core per module (separate DbContext per bounded context)
 - [ ] Shared Kernel:
   - BaseEntity
@@ -22,24 +22,24 @@ This document describes the full feature-complete implementation plan for the Ch
 
 ## Identity Module
 
-- [ ] User registration & login
-- [ ] JWT authentication
-- [ ] Role-based authorization:
+- [x] User registration & login
+- [x] JWT authentication
+- [x] Role-based authorization:
   - Admin
   - Teacher
   - Student
-- [ ] User profile basic information
+- [x] User profile basic information
 
 ### Frontend
-- [ ] Login / Register pages
-- [ ] Auth session handling (JWT storage)
-- [ ] Role-based route guard (Admin/Teacher/Student)
-- [ ] Basic layout shell (App layout + navigation)
+- [x] Login / Register pages
+- [x] Auth session handling (JWT storage)
+- [x] Role-based route guard (Admin/Teacher/Student)
+- [x] Basic layout shell (App layout + navigation)
 
 ### Backoffice
-- [ ] Admin user list page
-- [ ] View user detail
-- [ ] Role assignment UI
+- [x] Admin user list page
+- [x] View user detail
+- [x] Role assignment UI
 
 ---
 

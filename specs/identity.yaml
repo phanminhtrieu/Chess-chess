@@ -1,0 +1,240 @@
+module: UserManagement
+
+# =====================================================
+# DOMAIN MODEL
+# =====================================================
+domain:
+
+  entity: User
+  fields:
+    - name: Id
+      type: string
+    - name: DisplayName
+      type: string
+      required: true
+    - name: Email
+      type: string
+      required: true
+    - name: PasswordHash
+      type: string
+      required: true
+    - name: Role
+      type: enum
+      values: [Student, Teacher, Admin]
+      default: Student
+    - name: CreatedAt
+      type: datetime
+      required: true
+    - name: UpdatedAt
+      type: datetime
+      required: true
+    - name: IsActive
+      type: boolean
+      default: true
+
+  entity: RefreshToken
+  fields:
+    - name: Id
+      type: string
+    - name: UserId
+      type: string
+      required: true
+    - name: Token
+      type: string
+      required: true
+    - name: ExpiresAt
+      type: datetime
+      required: true
+    - name: RevokedAt
+      type: datetime
+      nullable: true
+
+# =====================================================
+# FRONTEND SERVICES (Student & Teacher Portal)
+# =====================================================
+frontend_services:
+
+  - name: RegisterUser
+    type: command
+    aggregate: User
+    rules:
+      - initializes Role = Student
+      - sets CreatedAt = now
+      - sets UpdatedAt = now
+
+  - name: Login
+    type: command
+    aggregate: User
+    rules:
+      - generates JWT + RefreshToken
+      - sets session UserId + ExpiresAt
+      - verifies credentials
+
+  - name: RefreshSession
+    type: command
+    aggregate: RefreshToken
+    rules:
+      - only usable if ExpiresAt > now AND RevokedAt is null
+      - issues new JWT
+
+  - name: Logout
+    type: command
+    aggregate: RefreshToken
+    rules:
+      - sets RevokedAt = now
+      - ensures IsActive = false
+
+  - name: GetProfile
+    type: query
+    returns:
+      - DisplayName
+      - Role
+
+# =====================================================
+# BACKOFFICE SERVICES (Management Page)
+# =====================================================
+backoffice_services:
+
+  - name: UpdateUser
+    type: command
+    aggregate: User
+    rules:
+      - modifies DisplayName or Role
+      - sets UpdatedAt = now
+
+  - name: RevokeUserSessions
+    type: command
+    aggregate: RefreshToken
+    rules:
+      - sets RevokedAt = now for all active tokens of UserId
+      - ensures IsActive = false
+
+  - name: DeactivateUser
+    type: command
+    aggregate: User
+    rules:
+      - sets IsActive = false
+      - prevents new Login
+
+  - name: ListUsers
+    type: query
+    returns:
+      - DisplayName
+      - Role
+      - CreatedAt
+      - UpdatedAt
+
+  - name: GetUserAudit
+    type: query
+    returns:
+      - UpdatedAt history
+      - RefreshToken status
+
+# =====================================================
+# BUSINESS RULES & INVARIANTS
+# =====================================================
+invariants:
+
+  - id: INV_1
+    description: RefreshToken is invalid if current time > ExpiresAt or RevokedAt is not null
+
+  - id: INV_2
+    description: IsActive must always be false if RevokedAt is not null
+
+  - id: INV_3
+    description: RefreshToken must be strictly linked to a valid UserId
+
+  - id: INV_4
+    description: Role-based access control enforced before performing portal actions
+
+  - id: INV_5
+    description: UpdatedAt must be persisted whenever User is modified
+
+# =====================================================
+# EDGE CASES
+# =====================================================
+edge_cases:
+
+  - ManualRevocation:
+      description: Admin revokes token; session ends immediately regardless of ExpiresAt
+
+  - NaturalExpiration:
+      description: Distinguish logout due to timeout vs security intervention
+
+  - ConcurrencyDuringRefresh:
+      description: Revocation check must take precedence if RefreshToken used while being revoked
+
+  - ClockSkew:
+      description: Validation must account for slight server time differences
+
+# =====================================================
+# STATE MACHINE
+# =====================================================
+state_machine:
+
+  states:
+    - Active
+    - Inactive
+
+  transitions:
+    - from: Active
+      to: Inactive
+      guard:
+        - RevokedAt is not null OR IsActive = false
+    - from: Inactive
+      to: Active
+      guard:
+        - IsActive = true AND RevokedAt is null
+
+# =====================================================
+# API LAYER
+# =====================================================
+api:
+
+  frontend:
+
+    UserController:
+
+      RegisterUser:
+        method: POST
+        path: /api/frontend/users/register
+
+      Login:
+        method: POST
+        path: /api/frontend/users/login
+
+      RefreshSession:
+        method: POST
+        path: /api/frontend/users/refresh
+
+      Logout:
+        method: POST
+        path: /api/frontend/users/logout
+
+      GetProfile:
+        method: GET
+        path: /api/frontend/users/profile
+
+  backoffice:
+
+    UserController:
+
+      UpdateUser:
+        method: PUT
+        path: /api/backoffice/users/{id}
+
+      RevokeUserSessions:
+        method: POST
+        path: /api/backoffice/users/{id}/revoke-sessions
+
+      DeactivateUser:
+        method: POST
+        path: /api/backoffice/users/{id}/deactivate
+
+      ListUsers:
+        method: GET
+        path: /api/backoffice/users
+
+      GetUserAudit:
+        method: GET
+        path: /api/backoffice/users/{id}/audit

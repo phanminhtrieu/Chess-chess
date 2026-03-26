@@ -1,0 +1,17 @@
+<div class="login-container">
+  <div class="login-box">
+    <h2>Admin Authentication</h2>
+    @if (error) { <div class="error-msg">{{ error }}</div> }
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="password" formControlName="password" />
+      </div>
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </form>
+  </div>
+</div>

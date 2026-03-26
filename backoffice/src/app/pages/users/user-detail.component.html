@@ -1,0 +1,32 @@
+@if (userForm()) {
+<div class="container">
+  <h2>Edit User</h2>
+  <a routerLink="/users">Back to list</a>
+  
+  <div class="card">
+    <form [formGroup]="userForm()" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label>Display Name</label>
+        <input type="text" formControlName="displayName" />
+      </div>
+      
+      <div class="form-group">
+        <label>Role</label>
+        <select formControlName="role">
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+      
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+
+  <div class="card auth-actions">
+    <h3>Security Actions</h3>
+    <button class="btn-warn" (click)="revokeSessions()">Revoke Sessions</button>
+    <button class="btn-danger" (click)="deactivateUser()">Deactivate User</button>
+  </div>
+</div>
+}

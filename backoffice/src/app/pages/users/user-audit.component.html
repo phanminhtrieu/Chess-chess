@@ -1,0 +1,39 @@
+@if (auditData()) {
+<div class="container">
+  <h2>Audit Log for {{ auditData().displayName }}</h2>
+  <p>ID: {{ auditData().id }}</p>
+  <p>Created: {{ auditData().createdAt | date:'medium' }}</p>
+  <p>Last Updated: {{ auditData().updatedAt | date:'medium' }}</p>
+
+  <a routerLink="/users">Back to list</a>
+
+  <h3>Session History</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Token ID (truncated)</th>
+        <th>Expires At</th>
+        <th>Revoked At</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (token of auditData().refreshTokens; track token.token) {
+        <tr>
+          <td class="code">{{ token.token | slice:0:15 }}...</td>
+          <td>{{ token.expiresAt | date:'medium' }}</td>
+          <td>
+            <span *ngIf="token.revokedAt" class="text-danger">{{ token.revokedAt | date:'medium' }}</span>
+            <span *ngIf="!token.revokedAt">-</span>
+          </td>
+          <td>
+            <span class="badge" [class.active]="token.isActive" [class.inactive]="!token.isActive">
+              {{ token.isActive ? 'Active' : 'Expired/Revoked' }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+}
