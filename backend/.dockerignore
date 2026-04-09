@@ -1,8 +1,7 @@
 **/.vs
-**/bin
-**/obj
 **/.git
 **/.github
 **/.vscode
+**/bin
+**/obj
 .dockerignore
-Dockerfile
