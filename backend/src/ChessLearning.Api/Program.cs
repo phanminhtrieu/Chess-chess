@@ -7,6 +7,7 @@ using ChessLearning.Modules.Content;
 using ChessLearning.Modules.Game;
 using ChessLearning.Modules.Progress;
 using Hangfire;
+using Microsoft.EntityFrameworkCore; // Thêm dòng này để dùng được lệnh Migrate
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,10 +51,24 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
-// Seed Identity Data
+// Khởi tạo Database và Seed Identity Data
 using (var scope = app.Services.CreateScope())
 {
-    await ChessLearning.Modules.Identity.Infrastructure.IdentitySeedData.SeedAsync(app.Services);
+    var services = scope.ServiceProvider;
+    try 
+    {
+        // 1. Tự động tạo DB và chạy Migration
+        var context = services.GetRequiredService<ChessLearning.Modules.Identity.Infrastructure.IdentityDbContext>();
+        await context.Database.MigrateAsync();
+
+        // 2. Thực hiện Seed dữ liệu
+        await ChessLearning.Modules.Identity.Infrastructure.IdentitySeedData.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Đã xảy ra lỗi trong quá trình khởi tạo Database hoặc Seed dữ liệu.");
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -62,12 +77,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
+
+// app.UseHttpsRedirection();
 
 // Use Hangfire Dashboard (restrict in production!)
 app.UseHangfireDashboard("/admin/hangfire");
-
-app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();

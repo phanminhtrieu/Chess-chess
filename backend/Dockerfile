@@ -1,7 +1,8 @@
 # Stage 1: Build the app
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
-
+#huong dan luu va tat: 
+#luu: ctrl + O -> ctrl + X -> enterx
 # Copy everything and restore
 COPY src/ ./src/
 COPY *.sln ./
@@ -11,7 +12,7 @@ RUN dotnet restore
 RUN dotnet publish src/ChessLearning.Api/ChessLearning.Api.csproj -c Release -o /out
 
 # Stage 2: Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /out .
 

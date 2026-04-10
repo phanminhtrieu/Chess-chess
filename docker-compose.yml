@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   db:
+    platform: linux/amd64
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
@@ -10,8 +11,14 @@ services:
       - "1433:1433"
     networks:
       - chess-network
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password123!", "-Q", "SELECT 1", "-C"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   backend:
+    platform: linux/amd64
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -19,13 +26,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=db;Database=ChessLearningDb;User Id=sa;Password=Password123!;TrustServerCertificate=True;MultipleActiveResultSets=true
     ports:
-      - "5000:8080"
+      - "5200:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - chess-network
 
   frontend:
+    # platform: linux/amd64
     build:
       context: .
       dockerfile: frontend/Dockerfile
